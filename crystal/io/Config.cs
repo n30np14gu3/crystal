@@ -70,7 +70,7 @@ namespace crystal.io
             string[] pathParts = path.Split(Path.DirectorySeparatorChar);
             if (pathParts.Length != 1)
             {
-                for (int i = 0; i < pathParts.Length; i++)
+                for (int i = 0; i < pathParts.Length - 1; i++)
                 {
                     if (i > 0)
                         pathParts[i] = Path.Combine(pathParts[i - 1], pathParts[i]);
