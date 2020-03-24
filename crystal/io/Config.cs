@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using Newtonsoft.Json;
 
@@ -65,23 +66,18 @@ namespace crystal.io
         /// <typeparam name="T">type of class</typeparam>
         /// <param name="path">path to file</param>
         /// <param name="config">class of configuration</param>
-        public static void SaveConfig<T>(string path, T config)
+        /// <param name="pretty">Save json formatted</param>
+        public static void SaveConfig<T>(string path, T config, bool pretty = false)
         {
-            string[] pathParts = path.Split(Path.DirectorySeparatorChar);
-            if (pathParts.Length != 1)
-            {
-                for (int i = 0; i < pathParts.Length - 1; i++)
-                {
-                    if (i > 0)
-                        pathParts[i] = Path.Combine(pathParts[i - 1], pathParts[i]);
+            var pathParts = path.Split(Path.DirectorySeparatorChar);
 
-                    if (!Directory.Exists(pathParts[i]))
-                        Directory.CreateDirectory(pathParts[i]);
-                }
-            }
-            File.WriteAllText(path, JsonConvert.SerializeObject(config));
+            string directories = string.Join(Path.DirectorySeparatorChar,
+                path.Split(Path.DirectorySeparatorChar).Where((x, index) => index != pathParts.Length - 1));
+
+            if(!Directory.Exists(directories)) 
+                Directory.CreateDirectory(directories);
+            File.WriteAllText(path, JsonConvert.SerializeObject(config, pretty ? Formatting.Indented : Formatting.None));
         }
-
         /// <summary>
         /// This method deletes a specific configuration file
         /// </summary>
